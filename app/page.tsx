@@ -1,101 +1,106 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { words } from "@/lib/words";
+import { handleKeyDown, handleEnterDown } from "@/funcs/typing";
+import Rows from "@/components/Rows";
+import Win from "@/components/Win";
+
+interface GameStats {
+  gamesPlayed: number;
+  wins: number;
+  currentStreak: number;
+  maxStreak: number;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [correctWord, setCorrectWord] = useState<string[]>([]);
+  const [guides, setGuides] = useState<string[][]>([]);
+  const [rows, setRows] = useState<string[][]>(
+    Array(6)
+      .fill([])
+      .map(() => Array(5).fill(""))
+  );
+  const [activeRow, setActiveRow] = useState(0);
+  const [win, setWin] = useState(false);
+  const [stats, setStats] = useState<GameStats>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("wordleStats");
+      return saved
+        ? JSON.parse(saved)
+        : {
+            gamesPlayed: 0,
+            wins: 0,
+            currentStreak: 0,
+            maxStreak: 0,
+          };
+    }
+    return {
+      gamesPlayed: 0,
+      wins: 0,
+      currentStreak: 0,
+      maxStreak: 0,
+    };
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  useEffect(() => {
+    setCorrectWord(words[Math.floor(Math.random() * words.length)].split(""));
+  }, []);
+
+  const keyDownHandler = useCallback(
+    (e: KeyboardEvent) => {
+      handleKeyDown(e, currentIndex, setCurrentIndex, activeRow, setRows);
+      handleEnterDown(
+        e,
+        correctWord,
+        rows[activeRow],
+        setGuides,
+        activeRow,
+        setActiveRow,
+        setCurrentIndex,
+        setWin
+      );
+    },
+    [correctWord, currentIndex, activeRow, rows]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", keyDownHandler);
+    return () => {
+      document.removeEventListener("keydown", keyDownHandler);
+    };
+  }, [correctWord, currentIndex, guides, activeRow, rows, keyDownHandler]);
+
+  const updateStats = (won: boolean) => {
+    setStats((prev) => {
+      const newStats = {
+        gamesPlayed: prev.gamesPlayed + 1,
+        wins: prev.wins + (won ? 1 : 0),
+        currentStreak: won ? prev.currentStreak + 1 : 0,
+        maxStreak: won
+          ? Math.max(prev.maxStreak, prev.currentStreak + 1)
+          : prev.maxStreak,
+      };
+      localStorage.setItem("wordleStats", JSON.stringify(newStats));
+      return newStats;
+    });
+  };
+
+  useEffect(() => {
+    if (win) {
+      updateStats(true);
+      document.removeEventListener("keydown", keyDownHandler);
+    }
+  }, [win, keyDownHandler]);
+
+  return (
+    <div className="flex justify-center items-center h-full w-full">
+      <div className="absolute flex top-24 w-full justify-center items-center flex-col font-extrabold text-[4rem]">
+        WORDLE<span className="font-light text-[1rem]">by Elliot</span>
+      </div>
+      <Win win={win} attempts={activeRow + 1} guides={guides} stats={stats} />
+      <Rows rows={rows} activeRow={activeRow} guides={guides} />
     </div>
   );
 }
