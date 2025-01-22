@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { words } from "@/lib/words";
 import { handleKeyDown, handleEnterDown } from "@/funcs/typing";
 import Rows from "@/components/Rows";
-import Win from "@/components/Win";
+import Results from "@/components/Results";
 
 interface GameStats {
   gamesPlayed: number;
@@ -23,7 +23,7 @@ export default function Home() {
       .map(() => Array(5).fill(""))
   );
   const [activeRow, setActiveRow] = useState(0);
-  const [win, setWin] = useState(false);
+  const [win, setWin] = useState("undefined");
   const [stats, setStats] = useState<GameStats>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("wordleStats");
@@ -88,8 +88,15 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (win) {
+    if (win === "win") {
       updateStats(true);
+      document.removeEventListener("keydown", keyDownHandler);
+    }
+  }, [win, keyDownHandler]);
+
+  useEffect(() => {
+    if (win === "lose") {
+      updateStats(false);
       document.removeEventListener("keydown", keyDownHandler);
     }
   }, [win, keyDownHandler]);
@@ -99,7 +106,13 @@ export default function Home() {
       <div className="absolute flex top-24 w-full justify-center items-center flex-col font-extrabold text-[4rem]">
         WORDLE ∞<span className="font-light text-[1rem]">by Elliot</span>
       </div>
-      <Win win={win} attempts={activeRow + 1} guides={guides} stats={stats} />
+      <Results
+        result={win}
+        attempts={activeRow + 1}
+        guides={guides}
+        stats={stats}
+        correctWord={correctWord}
+      />
       <Rows rows={rows} activeRow={activeRow} guides={guides} />
     </div>
   );

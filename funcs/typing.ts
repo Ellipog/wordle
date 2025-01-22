@@ -59,7 +59,7 @@ export const handleEnterDown = (
   activeRow: number,
   setActiveRow: Dispatch<SetStateAction<number>>,
   setCurrentIndex: Dispatch<SetStateAction<number>>,
-  setWin: Dispatch<SetStateAction<boolean>>
+  setWin: Dispatch<SetStateAction<string>>
 ) => {
   if (e.key === "Enter" && getInput(activeRow, 4)?.innerText !== "") {
     console.log(correctWord, currentWord);
@@ -90,7 +90,9 @@ export const handleEnterDown = (
       if (
         JSON.stringify(newGuide) === JSON.stringify(["g", "g", "g", "g", "g"])
       ) {
-        setWin(true);
+        setWin("win");
+      } else if (activeRow === 5) {
+        setWin("lose");
       } else {
         setActiveRow(activeRow + 1);
         setCurrentIndex(0);
