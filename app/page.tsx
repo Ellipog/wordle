@@ -97,7 +97,7 @@ export default function Home() {
   return (
     <div className="flex justify-center items-center h-full w-full">
       <div className="absolute flex top-24 w-full justify-center items-center flex-col font-extrabold text-[4rem]">
-        WORDLE<span className="font-light text-[1rem]">by Elliot</span>
+        WORDLE ∞<span className="font-light text-[1rem]">by Elliot</span>
       </div>
       <Win win={win} attempts={activeRow + 1} guides={guides} stats={stats} />
       <Rows rows={rows} activeRow={activeRow} guides={guides} />
