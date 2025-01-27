@@ -207,8 +207,10 @@ export default function Home() {
         correctWord={correctWord}
         hardMode={hardMode}
       />
-      <div className="flex flex-col items-center justify-center gap-7">
-        <Rows rows={rows} activeRow={activeRow} guides={guides} />
+      <div className="flex flex-col items-center justify-center gap-7 bottom-0 md:inset-0 pb-4 md:pb-0">
+        <div className="mb-12 md:mb-0">
+          <Rows rows={rows} activeRow={activeRow} guides={guides} />
+        </div>
         <Keyboard
           letterStatuses={letterStatuses}
           onKeyPress={(key) => {

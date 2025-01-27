@@ -1,4 +1,5 @@
 import { LetterStatus } from "@/app/page";
+import { motion } from "framer-motion";
 
 interface KeyboardProps {
   letterStatuses: LetterStatus;
@@ -36,9 +37,18 @@ export default function Keyboard({
       {rows.map((row, i) => (
         <div key={i} className="flex justify-center gap-1 my-1">
           {row.map((key) => (
-            <button
+            <motion.button
               key={key}
               onClick={() => onKeyPress(key)}
+              whileTap={{ scale: 0.75 }}
+              whileHover={{ scale: 1.05 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 500,
+                damping: 30,
+              }}
               className={`
                 ${
                   key === "⌫"
@@ -52,7 +62,7 @@ export default function Keyboard({
                 )} hover:opacity-90 transition-opacity flex items-center justify-center`}
             >
               {key}
-            </button>
+            </motion.button>
           ))}
         </div>
       ))}
