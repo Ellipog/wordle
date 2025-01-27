@@ -158,7 +158,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen w-full">
-      <div className="absolute top-12 w-full flex justify-center">
+      <div className="mt-12 w-full flex justify-center">
         <div className="font-extrabold text-[2rem] md:text-[4rem] flex flex-col items-center">
           <div className="flex items-center gap-2">
             WORDLE
@@ -207,27 +207,25 @@ export default function Home() {
         correctWord={correctWord}
         hardMode={hardMode}
       />
-      <main className="flex-1 flex flex-col items-center justify-center mt-32 md:mt-0">
-        <div className="mb-8">
-          <Rows rows={rows} activeRow={activeRow} guides={guides} />
-        </div>
-        <div className="fixed bottom-4 w-full max-w-2xl">
-          <Keyboard
-            letterStatuses={letterStatuses}
-            onKeyPress={(key) => {
-              let mockEvent;
-              if (key === "⌫") {
-                mockEvent = { key: "Backspace" } as KeyboardEvent;
-              } else if (key === "ENTER") {
-                mockEvent = { key: "Enter" } as KeyboardEvent;
-              } else {
-                mockEvent = { key: key.toLowerCase() } as KeyboardEvent;
-              }
-              keyDownHandler(mockEvent);
-            }}
-          />
-        </div>
-      </main>
+      <div className="mb-8 w-full flex justify-center mt-8 md:mt-12 items-center">
+        <Rows rows={rows} activeRow={activeRow} guides={guides} />
+      </div>
+      <div className="fixed bottom-4 w-full max-w-2xl">
+        <Keyboard
+          letterStatuses={letterStatuses}
+          onKeyPress={(key) => {
+            let mockEvent;
+            if (key === "⌫") {
+              mockEvent = { key: "Backspace" } as KeyboardEvent;
+            } else if (key === "ENTER") {
+              mockEvent = { key: "Enter" } as KeyboardEvent;
+            } else {
+              mockEvent = { key: key.toLowerCase() } as KeyboardEvent;
+            }
+            keyDownHandler(mockEvent);
+          }}
+        />
+      </div>
     </div>
   );
 }

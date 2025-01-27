@@ -33,7 +33,7 @@ export default function Keyboard({
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-2 fixed bottom-1">
+    <div className="w-full mx-auto px-2 fixed bottom-1">
       {rows.map((row, i) => (
         <div key={i} className="flex justify-center gap-1 my-1">
           {row.map((key) => (
