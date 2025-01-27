@@ -5,12 +5,19 @@ import { words } from "@/lib/words";
 import { handleKeyDown, handleEnterDown } from "@/funcs/typing";
 import Rows from "@/components/Rows";
 import Results from "@/components/Results";
+import Keyboard from "@/components/Keyboard";
+import { Infinity } from "lucide-react";
+import ErrorMessage from "@/components/ErrorMessage";
 
 interface GameStats {
   gamesPlayed: number;
   wins: number;
   currentStreak: number;
   maxStreak: number;
+}
+
+export interface LetterStatus {
+  [key: string]: "unused" | "wrong" | "present" | "correct";
 }
 
 export default function Home() {
@@ -43,6 +50,15 @@ export default function Home() {
       maxStreak: 0,
     };
   });
+  const [letterStatuses, setLetterStatuses] = useState<LetterStatus>(() => {
+    const initial: LetterStatus = {};
+    "abcdefghijklmnopqrstuvwxyz".split("").forEach((letter) => {
+      initial[letter] = "unused";
+    });
+    return initial;
+  });
+  const [hardMode, setHardMode] = useState(false);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     setCorrectWord(words[Math.floor(Math.random() * words.length)].split(""));
@@ -50,7 +66,15 @@ export default function Home() {
 
   const keyDownHandler = useCallback(
     (e: KeyboardEvent) => {
-      handleKeyDown(e, currentIndex, setCurrentIndex, activeRow, setRows);
+      handleKeyDown(
+        e,
+        currentIndex,
+        setCurrentIndex,
+        activeRow,
+        setRows,
+        letterStatuses,
+        hardMode
+      );
       handleEnterDown(
         e,
         correctWord,
@@ -59,10 +83,24 @@ export default function Home() {
         activeRow,
         setActiveRow,
         setCurrentIndex,
-        setWin
+        setWin,
+        setLetterStatuses,
+        hardMode,
+        guides,
+        activeRow > 0 ? rows[activeRow - 1] : [],
+        letterStatuses,
+        setError
       );
     },
-    [correctWord, currentIndex, activeRow, rows]
+    [
+      correctWord,
+      currentIndex,
+      activeRow,
+      rows,
+      hardMode,
+      guides,
+      letterStatuses,
+    ]
   );
 
   useEffect(() => {
@@ -101,19 +139,91 @@ export default function Home() {
     }
   }, [win, keyDownHandler]);
 
+  useEffect(() => {
+    if (error) {
+      // Add shake animation to current row
+      const currentRow = document.querySelector(
+        `[data-row="${activeRow}"]`
+      )?.parentElement;
+      if (currentRow) {
+        currentRow.classList.add("animate-[shake_0.5s_ease-in-out]");
+        setTimeout(() => {
+          currentRow.classList.remove("animate-[shake_0.5s_ease-in-out]");
+        }, 500);
+      }
+      const timer = setTimeout(() => setError(""), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, activeRow]);
+
   return (
     <div className="flex justify-center items-center h-full w-full">
-      <div className="absolute flex top-24 w-full justify-center items-center flex-col font-extrabold text-[4rem]">
-        WORDLE ∞<span className="font-light text-[1rem]">by Elliot</span>
+      <div className="absolute flex top-12 w-full justify-center items-center flex-col">
+        <div className="font-extrabold text-[2rem] md:text-[4rem] md:top-24 flex flex-col items-center">
+          <div className="flex items-center gap-2">
+            WORDLE
+            <button
+              onClick={() => setHardMode(!hardMode)}
+              disabled={guides.length > 0}
+              className={`
+                transition-all duration-300 
+                hover:opacity-80 md:ml-2
+                flex items-center justify-center
+                text-xl md:text-2xl
+                w-8 h-8 md:w-12 md:h-12
+                md:mt-2 mt-1
+                rounded-full
+                transform
+                ${hardMode ? "rotate-90" : "rotate-0"}
+                ${
+                  hardMode
+                    ? "bg-yellow-500 text-white"
+                    : "bg-gray-200 text-gray-700"
+                }
+                ${guides.length > 0 ? "opacity-50 cursor-not-allowed" : ""}
+              `}
+              title={
+                guides.length > 0
+                  ? "Hard Mode cannot be changed after first guess"
+                  : hardMode
+                  ? "Hard Mode: ON"
+                  : "Hard Mode: OFF"
+              }
+            >
+              <Infinity className="w-6 h-6 md:w-8 md:h-8" strokeWidth={2.5} />
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-light text-[1rem]">by Elliot</span>
+          </div>
+        </div>
       </div>
+      <ErrorMessage message={error} />
       <Results
         result={win}
         attempts={activeRow + 1}
         guides={guides}
         stats={stats}
         correctWord={correctWord}
+        hardMode={hardMode}
       />
-      <Rows rows={rows} activeRow={activeRow} guides={guides} />
+      <div className="flex flex-col items-center justify-center gap-7">
+        <Rows rows={rows} activeRow={activeRow} guides={guides} />
+        <Keyboard
+          letterStatuses={letterStatuses}
+          onKeyPress={(key) => {
+            let mockEvent;
+            if (key === "⌫") {
+              mockEvent = { key: "Backspace" } as KeyboardEvent;
+            } else if (key === "ENTER") {
+              mockEvent = { key: "Enter" } as KeyboardEvent;
+            } else {
+              mockEvent = { key: key.toLowerCase() } as KeyboardEvent;
+            }
+            keyDownHandler(mockEvent);
+          }}
+        />
+      </div>
     </div>
   );
 }

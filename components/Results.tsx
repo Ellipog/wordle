@@ -1,5 +1,6 @@
 import Stats from "@/components/Stats";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 interface ResultsProps {
   result: string;
@@ -12,6 +13,7 @@ interface ResultsProps {
     maxStreak: number;
   };
   correctWord: string[];
+  hardMode: boolean;
 }
 
 export default function Results({
@@ -20,6 +22,7 @@ export default function Results({
   guides,
   stats,
   correctWord,
+  hardMode,
 }: ResultsProps) {
   const [copied, setCopied] = useState(false);
 
@@ -31,87 +34,130 @@ export default function Results({
       )
       .join("\n");
 
-    return `Wordle ${attempts}/6\n\n${guideEmojis}`;
+    const hardModeIndicator = hardMode ? "⭐" : "";
+    return `Wordle ${attempts}/6${hardModeIndicator}\n\n${guideEmojis}`;
   };
 
   const handleShare = async () => {
     const text = generateShareText();
-
     try {
-      if (navigator.share) {
-        await navigator.share({ text });
-      } else {
-        await navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      }
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.log(error);
-      const textarea = document.createElement("textarea");
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand("copy");
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch (err) {
-        console.error("Failed to copy:", err);
-      }
-      document.body.removeChild(textarea);
+      console.error("Failed to copy:", error);
     }
   };
 
   if (result === "undefined") return null;
 
   return (
-    <div className="fixed inset-0 bg-black/5 backdrop-blur-sm flex justify-center items-center z-50">
-      <div className="bg-white shadow-xl rounded-md p-8 max-w-md mx-4 text-center transform animate-[slideDown_0.3s_ease-out]">
-        {result === "win" ? (
-          <>
-            <h1 className="text-4xl font-bold mb-4">CONGRATULATIONS!</h1>
-            <p className="text-gray-600 mb-6">
-              You solved it in {attempts} {attempts === 1 ? "try" : "tries"}! 🎉
-            </p>
-          </>
-        ) : (
-          <>
-            <h1 className="text-4xl font-bold mb-4">GAME OVER</h1>
-            <p className="text-gray-600 mb-6">
-              The word was:{" "}
-              <span className="font-bold">
-                {correctWord.join("").toUpperCase()}
-              </span>
-            </p>
-          </>
-        )}
-
-        <Stats {...stats} />
-
-        <div className="flex gap-4 justify-center">
-          <button
-            onClick={() => window.location.reload()}
-            className={`${
-              result === "win"
-                ? "bg-green-500 hover:bg-green-600"
-                : "bg-red-500 hover:bg-red-600"
-            } text-white font-semibold py-2 px-6 rounded-full transition-colors`}
-          >
-            Play Again
-          </button>
-          <button
-            onClick={handleShare}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-full transition-colors relative"
-          >
-            {copied ? "Copied!" : "Share"}
-            {copied && (
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-sm py-1 px-2 rounded whitespace-nowrap">
-                Copied to clipboard!
-              </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4"
+      onClick={(e) => e.target === e.currentTarget && window.location.reload()}
+    >
+      <motion.div
+        initial={{ scale: 0.9, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        className="bg-white/95 backdrop-blur shadow-2xl rounded-3xl p-8 w-full max-w-md mx-auto"
+      >
+        <div className="max-h-[80vh] overflow-y-auto space-y-6">
+          {/* Result Header */}
+          <div className="text-center space-y-2">
+            {result === "win" ? (
+              <>
+                <h1 className="text-4xl font-bold text-green-500">
+                  Congratulations!
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Solved in {attempts} {attempts === 1 ? "try" : "tries"}!{" "}
+                  {hardMode && <span className="text-yellow-500">⭐</span>}
+                </p>
+              </>
+            ) : (
+              <>
+                <h1 className="text-4xl font-bold text-red-500">Game Over</h1>
+                <p className="text-gray-600 text-lg">
+                  The word was:{" "}
+                  <span className="font-bold text-xl">
+                    {correctWord.join("").toUpperCase()}
+                  </span>
+                </p>
+              </>
             )}
-          </button>
+          </div>
+
+          {/* Stats Section */}
+          <div className="bg-gray-100/50 backdrop-blur rounded-2xl p-6">
+            <Stats {...stats} />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => window.location.reload()}
+              className={`
+                ${result === "win" ? "bg-green-500" : "bg-red-500"}
+                text-white font-semibold py-4 px-6 rounded-xl
+                transition-all duration-200 transform hover:scale-[1.02]
+                active:scale-95 hover:shadow-lg hover:brightness-110
+              `}
+            >
+              Play Again
+            </button>
+            <button
+              onClick={handleShare}
+              disabled={copied}
+              className={`
+                ${copied ? "bg-green-500" : "bg-blue-500"}
+                text-white font-semibold py-4 px-6 rounded-xl
+                transition-all duration-200 transform hover:scale-[1.02]
+                active:scale-95 hover:shadow-lg hover:brightness-110
+                disabled:opacity-50 disabled:cursor-not-allowed
+                flex items-center justify-center gap-2
+              `}
+            >
+              {copied ? (
+                <span className="flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5 animate-[popIn_0.3s_ease-out]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Copied!
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                    />
+                  </svg>
+                  Share Result
+                </span>
+              )}
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

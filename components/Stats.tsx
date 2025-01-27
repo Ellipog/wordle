@@ -15,7 +15,7 @@ export default function Stats({
     gamesPlayed > 0 ? Math.round((wins / gamesPlayed) * 100) : 0;
 
   return (
-    <div className="grid grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-4 gap-4">
       <div className="text-center">
         <div className="text-3xl font-bold">{gamesPlayed}</div>
         <div className="text-xs text-gray-500">Played</div>
