@@ -157,9 +157,9 @@ export default function Home() {
   }, [error, activeRow]);
 
   return (
-    <div className="flex justify-center items-center h-full w-full">
-      <div className="absolute flex top-12 w-full justify-center items-center flex-col">
-        <div className="font-extrabold text-[2rem] md:text-[4rem] md:top-24 flex flex-col items-center">
+    <div className="flex flex-col min-h-screen w-full">
+      <div className="absolute top-12 w-full flex justify-center">
+        <div className="font-extrabold text-[2rem] md:text-[4rem] flex flex-col items-center">
           <div className="flex items-center gap-2">
             WORDLE
             <button
@@ -207,25 +207,27 @@ export default function Home() {
         correctWord={correctWord}
         hardMode={hardMode}
       />
-      <div className="flex flex-col items-center justify-center gap-7 bottom-0 md:inset-0 pb-4 md:pb-0">
-        <div className="mb-12 md:mb-0">
+      <main className="flex-1 flex flex-col items-center justify-center mt-32 md:mt-0">
+        <div className="mb-8">
           <Rows rows={rows} activeRow={activeRow} guides={guides} />
         </div>
-        <Keyboard
-          letterStatuses={letterStatuses}
-          onKeyPress={(key) => {
-            let mockEvent;
-            if (key === "⌫") {
-              mockEvent = { key: "Backspace" } as KeyboardEvent;
-            } else if (key === "ENTER") {
-              mockEvent = { key: "Enter" } as KeyboardEvent;
-            } else {
-              mockEvent = { key: key.toLowerCase() } as KeyboardEvent;
-            }
-            keyDownHandler(mockEvent);
-          }}
-        />
-      </div>
+        <div className="fixed bottom-4 w-full max-w-2xl">
+          <Keyboard
+            letterStatuses={letterStatuses}
+            onKeyPress={(key) => {
+              let mockEvent;
+              if (key === "⌫") {
+                mockEvent = { key: "Backspace" } as KeyboardEvent;
+              } else if (key === "ENTER") {
+                mockEvent = { key: "Enter" } as KeyboardEvent;
+              } else {
+                mockEvent = { key: key.toLowerCase() } as KeyboardEvent;
+              }
+              keyDownHandler(mockEvent);
+            }}
+          />
+        </div>
+      </main>
     </div>
   );
 }

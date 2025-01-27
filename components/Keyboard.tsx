@@ -33,7 +33,7 @@ export default function Keyboard({
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-2 fixed bottom-12">
+    <div className="w-full max-w-2xl mx-auto px-2 fixed bottom-1">
       {rows.map((row, i) => (
         <div key={i} className="flex justify-center gap-1 my-1">
           {row.map((key) => (
@@ -52,10 +52,10 @@ export default function Keyboard({
               className={`
                 ${
                   key === "⌫"
-                    ? "w-12 text-md"
+                    ? "w-14 text-md"
                     : key === "ENTER"
-                    ? "w-12 text-xs"
-                    : "w-8 text-sm"
+                    ? "w-14 text-xs"
+                    : "w-10 text-sm"
                 } py-4 rounded font-bold h-12
                 ${getKeyStatus(
                   key
