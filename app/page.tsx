@@ -8,7 +8,7 @@ import Results from "@/components/Results";
 import Keyboard from "@/components/Keyboard";
 import { Infinity } from "lucide-react";
 import ErrorMessage from "@/components/ErrorMessage";
-
+import Info from "@/components/Info";
 interface GameStats {
   gamesPlayed: number;
   wins: number;
@@ -52,7 +52,7 @@ export default function Home() {
   });
   const [letterStatuses, setLetterStatuses] = useState<LetterStatus>(() => {
     const initial: LetterStatus = {};
-    "abcdefghijklmnopqrstuvwxyz".split("").forEach((letter) => {
+    "abcdefghijklmnopqrstuvwxyzæøå".split("").forEach((letter) => {
       initial[letter] = "unused";
     });
     return initial;
@@ -159,6 +159,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen w-full">
       <div className="mt-12 w-full flex justify-center">
+        <Info />
         <div className="font-extrabold text-[2rem] md:text-[4rem] flex flex-col items-center">
           <div className="flex items-center gap-2">
             WORDLE

@@ -1,6 +1,6 @@
 import { LetterStatus } from "@/app/page";
 import { Dispatch, SetStateAction } from "react";
-import { words } from "@/lib/words";
+import { validWords } from "@/lib/words";
 
 export const getInput = (rowIndex: number, columnIndex: number) => {
   return document.querySelector<HTMLInputElement>(
@@ -40,7 +40,7 @@ export const handleKeyDown = (
         });
       }
     }
-  } else if (/^[a-zA-Z]$/.test(e.key)) {
+  } else if (/^[a-zA-Zæøå]$/.test(e.key)) {
     if (hardMode && letterStatuses[e.key.toLowerCase()] === "wrong") {
       return;
     }
@@ -79,7 +79,7 @@ export const handleEnterDown = (
     const guessedWord = currentWord.join("");
 
     // Check if word exists in word list
-    if (!words.includes(guessedWord)) {
+    if (!validWords.includes(guessedWord)) {
       setError?.("Word not in word list");
       return;
     }

@@ -11,8 +11,8 @@ export default function Keyboard({
   onKeyPress,
 }: KeyboardProps) {
   const rows = [
-    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
-    ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Å"],
+    ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ø", "Æ"],
     ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "⌫"],
   ];
 
@@ -55,6 +55,8 @@ export default function Keyboard({
                     ? "w-14 text-md"
                     : key === "ENTER"
                     ? "w-14 text-xs"
+                    : key === "Æ" || key === "Ø" || key === "Å"
+                    ? "w-10 text-sm"
                     : "w-10 text-sm"
                 } py-4 rounded font-bold h-12
                 ${getKeyStatus(
