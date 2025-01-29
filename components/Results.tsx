@@ -69,18 +69,20 @@ export default function Results({
             {result === "win" ? (
               <>
                 <h1 className="text-4xl font-bold text-green-500">
-                  Congratulations!
+                  Gratulerer!
                 </h1>
                 <p className="text-gray-600 text-lg">
-                  Solved in {attempts} {attempts === 1 ? "try" : "tries"}!{" "}
+                  Løst på {attempts} {attempts === 1 ? "forsøk" : "forsøk"}!{" "}
                   {hardMode && <span className="text-yellow-500">⭐</span>}
                 </p>
               </>
             ) : (
               <>
-                <h1 className="text-4xl font-bold text-red-500">Game Over</h1>
+                <h1 className="text-4xl font-bold text-red-500">
+                  Spillet er over
+                </h1>
                 <p className="text-gray-600 text-lg">
-                  The word was:{" "}
+                  Ordet var:{" "}
                   <span className="font-bold text-xl">
                     {correctWord.join("").toUpperCase()}
                   </span>
@@ -105,7 +107,7 @@ export default function Results({
                 active:scale-95 hover:shadow-lg hover:brightness-110
               `}
             >
-              Play Again
+              Spill igjen
             </button>
             <button
               onClick={handleShare}
@@ -134,7 +136,7 @@ export default function Results({
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  Copied!
+                  Kopiert!
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
@@ -151,7 +153,7 @@ export default function Results({
                       d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
                     />
                   </svg>
-                  Share Result
+                  Del resultat
                 </span>
               )}
             </button>

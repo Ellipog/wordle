@@ -18,19 +18,19 @@ export default function Stats({
     <div className="grid grid-cols-4 gap-4">
       <div className="text-center">
         <div className="text-3xl font-bold">{gamesPlayed}</div>
-        <div className="text-xs text-gray-500">Played</div>
+        <div className="text-xs text-gray-500">Runder spilt</div>
       </div>
       <div className="text-center">
         <div className="text-3xl font-bold">{winPercentage}</div>
-        <div className="text-xs text-gray-500">Win %</div>
+        <div className="text-xs text-gray-500">Vunnet %</div>
       </div>
       <div className="text-center">
         <div className="text-3xl font-bold">{currentStreak}</div>
-        <div className="text-xs text-gray-500">Current Streak</div>
+        <div className="text-xs text-gray-500">Streak</div>
       </div>
       <div className="text-center">
         <div className="text-3xl font-bold">{maxStreak}</div>
-        <div className="text-xs text-gray-500">Max Streak</div>
+        <div className="text-xs text-gray-500">Rekord streak</div>
       </div>
     </div>
   );

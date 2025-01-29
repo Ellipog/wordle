@@ -185,17 +185,19 @@ export default function Home() {
               `}
               title={
                 guides.length > 0
-                  ? "Hard Mode cannot be changed after first guess"
+                  ? "Hard mode kan ikke endres etter første gjett"
                   : hardMode
-                  ? "Hard Mode: ON"
-                  : "Hard Mode: OFF"
+                  ? "Hard mode: PÅ"
+                  : "Hard mode: AV"
               }
             >
               <Infinity className="w-6 h-6 md:w-8 md:h-8" strokeWidth={2.5} />
             </button>
           </div>
           <div className="flex items-center gap-2">
-            <span className="font-light text-[1rem]">by Elliot</span>
+            <span className="font-light text-[1rem]">
+              Norsk versjon av Elliot
+            </span>
           </div>
         </div>
       </div>

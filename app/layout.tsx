@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Wordle ∞",
-  description: "by Elliot",
+  title: "Ordlek ∞",
+  description: "av Elliot",
 };
 
 export default function RootLayout({
@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="nb">
       <link rel="icon" type="image/jpeg" href="/wordle_icon.jpeg" />
       <body className={`antialiased h-screen w-screen`}>{children}</body>
     </html>

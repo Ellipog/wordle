@@ -59,7 +59,7 @@ export default function Info() {
                   setIsOpen(false);
                 }}
                 className="absolute top-2 right-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                aria-label="Close"
+                aria-label="Lukk"
               >
                 <svg
                   className="w-4 h-4 text-gray-500"
@@ -71,38 +71,38 @@ export default function Info() {
                   <path d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <h3 className="font-bold text-lg mb-2">How to Play</h3>
+              <h3 className="font-bold text-lg mb-2">Hvordan fungerer det?</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li>• Guess the word in 6 tries</li>
-                <li>• Each guess must be a valid 5-letter word</li>
-                <li>• Color feedback after each guess:</li>
+                <li>• Gjett ordet på 6 forsøk</li>
+                <li>• Hvert gjett må være et gyldig ord på 5 bokstaver</li>
+                <li>• Fargefeedback etter hvert gjett:</li>
                 <li className="flex items-center gap-2">
                   <span className="w-4 h-4 bg-green-500 rounded-sm" />
-                  <span>Letter is correct and in right position</span>
+                  <span>Bokstaven er riktig og på rett plass</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-4 h-4 bg-yellow-500 rounded-sm" />
-                  <span>Letter is in word but wrong position</span>
+                  <span>Bokstaven er i ordet men på feil plass</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-4 h-4 bg-gray-500 rounded-sm" />
-                  <span>Letter is not in word</span>
+                  <span>Bokstaven er ikke i ordet</span>
                 </li>
                 <li className="mt-4 pt-4 border-t border-gray-200">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="font-semibold">Hard Mode</span>
+                    <span className="font-semibold">Hard mode</span>
                     <Infinity className="w-4 h-4 text-yellow-500" />
                   </div>
                   <p className="text-xs leading-relaxed">
-                    Activate hard mode by clicking the infinity icon next to the
-                    title. In hard mode:
+                    Aktiver hard mode ved å klikke på uendelighetsikonet ved
+                    siden av tittelen.
                     <br />
-                    • You must use revealed hints in subsequent guesses
+                    • Du må bruke avslørte hint i neste gjett
                     <br />
-                    • Green letters must stay in position
+                    • Grønne bokstaver må bli på samme plass
                     <br />
-                    • Yellow letters must be used
-                    <br />• Gray letters cannot be used
+                    • Gule bokstaver må brukes
+                    <br />• Grå bokstaver kan ikke brukes
                   </p>
                 </li>
               </ul>
